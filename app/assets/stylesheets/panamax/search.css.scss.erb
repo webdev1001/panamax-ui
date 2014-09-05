@@ -113,6 +113,12 @@ body#search_flow main:after {
     }
   }
 
+  .keyword-bank {
+    transition: max-height 0.8s;
+    max-height: 520px;
+    overflow-y: scroll;
+  }
+
   &.collapsed {
     .toggler {
       span:last-child {
@@ -123,7 +129,7 @@ body#search_flow main:after {
       }
     }
     .keyword-bank {
-      height: 75px;
+      max-height: 75px;
       overflow: hidden;
     }
   }
