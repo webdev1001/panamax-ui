@@ -5,6 +5,13 @@ class BaseResource < ActiveResource::Base
   DOCKER_INDEX_BASE_URL = 'https://registry.hub.docker.com/'
 
   self.site = PanamaxApi::URL
+  self.user = 'admin'
+  self.password = 'password'
+
+  self.ssl_options = {
+    verify_mode: OpenSSL::SSL::VERIFY_PEER,
+    ca_path: '/var/app/panamax-ui/certs'
+  }
 
   def self.all_with_response(options={})
     prefix_options, query_options = split_options(options[:params])
