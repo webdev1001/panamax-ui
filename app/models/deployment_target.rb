@@ -1,0 +1,3 @@
+class DeploymentTarget < BaseResource
+end
+
