@@ -16,6 +16,7 @@ describe TemplatesController do
     TemplateForm.stub(:new).and_return(fake_template_form)
     App.stub(:find).and_return(fake_app)
     Type.stub(:all).and_return(fake_types)
+    fake_user.stub(:github_access_token_present?)
   end
 
   describe 'GET #new' do
@@ -42,18 +43,69 @@ describe TemplatesController do
       get :new
       expect(assigns(:template_form)).to eq fake_template_form
     end
-  end
 
-  context 'when an app cannot be found' do
-    before do
-      App.stub(:find).and_raise(ActiveResource::ResourceNotFound.new(double('err', code: '404')))
+    context 'when an app cannot be found' do
+      before do
+        App.stub(:find).and_raise(ActiveResource::ResourceNotFound.new(double('err', code: '404')))
+      end
+
+      it 'redirects to the apps page with a flash message' do
+        get :new
+        expect(flash[:alert]).to eq 'could not find application'
+        expect(response).to redirect_to(apps_path)
+      end
     end
 
-    it 'redirects to the apps page with a flash message' do
-      get :new
-      expect(flash[:alert]).to eq 'could not find application'
-      expect(response).to redirect_to(apps_path)
+    context 'when user github data has issues with' do
+      expected_flash_msg = "Your token may be malformed, expired or is not scoped correctly.
+Please <a href='https://github.com/settings/tokens/new?scope=repo,user:email' target='_blank'>
+generate a Github access token</a> with the correct privileges. Be sure to select at least 'repo'
+and 'user:email'."
+      before do
+        User.stub(:find).and_return(fake_bad_user)
+      end
+
+      context 'github access token not being valid' do
+        let(:fake_bad_user) { double(:fake_bad_user, email: 'foo', github_username: 'bar') }
+        before do
+          fake_bad_user.stub(:github_access_token_present?).and_return(false)
+        end
+
+        it 'renders the new view with a flash error message' do
+          get :new
+          expect(flash[:alert]).to eq expected_flash_msg
+          expect(response).to render_template :new
+        end
+      end
+
+      context 'user email not being valid' do
+        let(:fake_bad_user) { double(:fake_bad_user, email: '', github_username: 'foo') }
+        before do
+          fake_bad_user.stub(:github_access_token_present?).and_return(true)
+        end
+
+        it 'renders the new view with a flash error message' do
+          get :new
+          expect(flash[:alert]).to eq expected_flash_msg
+          expect(response).to render_template :new
+        end
+      end
+
+      context 'github username not being valid' do
+        let(:fake_bad_user) { double(:fake_bad_user, email: 'bar', github_username: '') }
+        before do
+          fake_bad_user.stub(:github_access_token_present?).and_return(true)
+        end
+
+        it 'renders the new view with a flash error message' do
+          get :new
+          expect(flash[:alert]).to eq expected_flash_msg
+          expect(response).to render_template :new
+        end
+      end
+
     end
+
   end
 
   describe 'POST #create' do
@@ -128,12 +180,12 @@ describe TemplatesController do
       end
 
     end
-  end
 
-  context 'for template_repo' do
-    it 'invokes create unless repo already exists' do
-      expect(TemplateRepo).to_not receive(:create).with(name: 'user/publicrepo')
-      post :create, name: 'user/publicrepo'
+    context 'for template_repo' do
+      it 'invokes create unless repo already exists' do
+        expect(TemplateRepo).to_not receive(:create).with(name: 'user/publicrepo')
+        post :create, name: 'user/publicrepo'
+      end
     end
   end
 
