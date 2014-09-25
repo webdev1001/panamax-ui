@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :deployment_targets, only: [:index, :show, :create]
+
   resource :user, only: [:update]
 
   resources :apps, only: [:index, :create, :show, :update, :destroy] do

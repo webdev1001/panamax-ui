@@ -80,6 +80,7 @@ body > header nav ul li {
 
 /* active states */
 #search_flow .search-link a,
+#deployments_flow .deployments-link a,
 #manage_flow .manage-link a {
   background-color: $lime;
 }

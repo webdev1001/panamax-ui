@@ -32,6 +32,8 @@
             = link_to 'Manage', dashboard_index_path, title: 'Manage'
           %li.documentation-link
             = link_to 'Documentation', 'http://panamax.io/documentation', target: '_blank', title: 'Documentation'
+          %li.deployments-link
+            = link_to 'Deployments', deployment_targets_path, title: 'Deployments'
     %aside.host
       %span CoreOS Host:
       .health

@@ -1,0 +1,10 @@
+- content_for(:body_id, 'deployments_flow')
+%h1 Deployment Targets
+- @deployment_targets.each do |target|
+  %dl
+    %dt Name:
+    %dd= target.name
+    %dt Endpoint URL
+    %dd= target.endpoint_url
+    %dt Token
+    %dd{ style: 'word-wrap: break-word' }= target.auth_blob
