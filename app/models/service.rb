@@ -92,7 +92,7 @@ class Service < BaseResource
 
   def volumes_from_attributes=(attributes)
     self.volumes_from = attributes.each_with_object([]) do |(_, volume_from), memo|
-      memo << VolumesFrom.new(volume_from) unless volume_from['_deleted'].to_s == '1'
+      memo << VolumesFrom.new(volume_from.except('id')) unless volume_from['_deleted'].to_s == '1'
     end
   end
 

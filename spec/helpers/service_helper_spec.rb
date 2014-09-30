@@ -25,13 +25,5 @@ describe ServiceHelper do
       ]
       expect(result).to eq(expected)
     end
-
-    it 'uses name as key when :name is third parameter' do
-      result = linkable_service_options(services, 2, :name)
-      expected = [
-        ['first', 'first']
-      ]
-      expect(result).to eq(expected)
-    end
   end
 end

@@ -97,19 +97,14 @@
     };
 
     var volumesFrom = function() {
-      var command = [],
-          args = [];
+      var flags = [];
 
-      if (options.volumesFrom.length > 0) {
-        for (var i = 0; i < options.volumesFrom.length; i++) {
-          var volume = options.volumesFrom[i];
-          args.push(volume);
-        }
-        command.push('--volumes-from "');
-        command.push(args.join(' '));
-        command.push('"');
+      for (var i = 0; i < options.volumesFrom.length; i++) {
+        var volume = options.volumesFrom[i];
+        flags.push('--volumes-from "' + volume + '"');
       }
-      return command.join('');
+
+      return flags;
     };
 
     var imageName = function() {

@@ -44,16 +44,17 @@
       name : container directory
     = f.fields_for :volumes_from do |data|
       - checkbox_id = "select_volume_from_#{data.options[:child_index]}"
-      %li{ title: "mount: #{data.object.container_name}" }
-        %strong.mount-point= data.object.container_name
-        = render 'mounted_volumes', service: @app.find_service_by_name(data.object.container_name)
+      %li{ title: "mount: #{data.object.service_name}" }
+        %strong.mount-point= data.object.service_name
+        = render 'mounted_volumes', service: @app.find_service_by_name(data.object.service_name)
         .actions
           = data.check_box :_deleted, { id: checkbox_id }
-          = data.hidden_field :container_name
+          = data.hidden_field :service_id
+          = data.hidden_field :service_name
           %a{ class: 'delete-action', title: 'remove', data: { checkbox: { selector: "##{checkbox_id}" } } } remove
   %ul.additional-entries
     %li.editing
       = add_fields_for(:volumes_from, f, { child_index: '_replaceme_' }) do |builder|
-        = builder.select :container_name, linkable_service_options(services, service_id, :name), { include_blank: true }, disabled: true, title: 'Mount', class: 'mount-point'
+        = builder.select :service_id, linkable_service_options(services, service_id), { include_blank: true }, disabled: true, title: 'Mount', class: 'mount-point'
         %a.cancel Cancel
   %a.button-add Mount a new Data Volume Container

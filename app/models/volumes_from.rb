@@ -1,6 +1,7 @@
 class VolumesFrom < BaseResource
 
   schema do
-    string :container_name
+    integer :service_id
+    string :service_name
   end
 end
